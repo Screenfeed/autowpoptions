@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<ruleset name="AutoWPOptions">
+	<description>Manage a set of WordPress options.</description>
+
+	<arg name="extensions" value="php"/>
+
+	<file>.</file>
+
+	<exclude-pattern>bin/*</exclude-pattern>
+	<exclude-pattern>report/*</exclude-pattern>
+	<exclude-pattern>tests/*</exclude-pattern>
+	<exclude-pattern>vendor/*</exclude-pattern>
+
+	<!-- Check for cross-version support for PHP 5.4 and higher + WP 4.4 and higher. -->
+	<config name="testVersion" value="5.4-"/>
+	<config name="minimum_supported_wp_version" value="4.4.0"/>
+
+	<!-- Run against the PHPCompatibility ruleset dedicated to WP. -->
+	<rule ref="PHPCompatibilityWP">
+		<include-pattern>*\.php$</include-pattern>
+	</rule>
+
+	<!-- Run against the WordPress ruleset. -->
+	<rule ref="WordPress">
+		<exclude name="Generic.Arrays.DisallowShortArraySyntax.Found"/>
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+	</rule>
+
+	<!-- Run against the NeutronStandard ruleset. -->
+	<rule ref="NeutronStandard">
+		<exclude name="NeutronStandard.AssignAlign.DisallowAssignAlign.Aligned"/>
+		<exclude name="NeutronStandard.Functions.TypeHint.NoArgumentType"/>
+		<exclude name="NeutronStandard.Functions.TypeHint.NoReturnType"/>
+		<exclude name="NeutronStandard.StrictTypes.RequireStrictTypes.StrictTypes"/>
+	</rule>
+</ruleset>

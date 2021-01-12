@@ -1,0 +1,53 @@
+{
+	"name": "screenfeed/autowpoptions",
+	"description": "Manage a set of WordPress options.",
+	"keywords": [
+		"wordpress",
+		"options"
+	],
+	"homepage": "https://github.com/Screenfeed/autowpoptions",
+	"license": "GPL-2.0",
+	"authors": [
+		{
+			"name": "Grégory Viguier",
+			"role": "Developer"
+		}
+	],
+	"type": "library",
+	"config": {
+		"sort-packages": true
+	},
+	"support": {
+		"issues": "https://github.com/Screenfeed/autowpoptions/issues",
+		"source": "https://github.com/Screenfeed/autowpoptions"
+	},
+	"require": {
+		"php": ">=5.4.0"
+	},
+	"require-dev": {
+		"php": "^7.0",
+		"automattic/phpcs-neutron-standard": "*",
+		"dealerdirect/phpcodesniffer-composer-installer": "*",
+		"phpcompatibility/phpcompatibility-wp": "*",
+		"phpmetrics/phpmetrics": "*",
+		"roave/security-advisories": "dev-master",
+		"squizlabs/php_codesniffer": "*",
+		"szepeviktor/phpstan-wordpress": "*",
+		"wp-coding-standards/wpcs": "*"
+	},
+	"autoload": {
+		"psr-4": {
+			"Screenfeed\\AutoWPOptions\\": "src/"
+		}
+	},
+	"scripts": {
+		"cs": "phpcs",
+		"stan": "\"vendor/bin/phpstan\" analyze --memory-limit=200M",
+		"metrics": "phpmetrics --config=phpmetrics.json",
+		"run-lints": [
+			"@cs",
+			"@stan",
+			"@metrics"
+		]
+	}
+}

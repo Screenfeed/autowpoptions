@@ -1,0 +1,12 @@
+{
+	"name": "autowpoptions",
+	"description": "Manage a set of WordPress options.",
+	"version": "1.0.0",
+	"homepage": "https://github.com/Screenfeed/autowpoptions",
+	"license": "GPL-2.0",
+	"private": true,
+	"author": {
+		"name": "Grégory Viguier",
+		"url": "https://www.screenfeed.fr/"
+	}
+}
