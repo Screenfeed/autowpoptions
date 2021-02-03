@@ -254,13 +254,13 @@ abstract class AbstractSanitization implements SanitizationInterface {
 					$values[ $key ] = $this->sanitize_and_validate( $key, $values[ $key ], $default );
 				}
 			}
-		}
 
-		$values = array_intersect_key( $values, $default_values );
+			$values = array_intersect_key( $values, $default_values );
+		}
 
 		// Version.
 		if ( empty( $values['version'] ) ) {
-			$values['version'] = $this->version;
+			$values['version'] = $this->sanitize_and_validate( 'version', $this->version, '' );
 		}
 
 		return $this->validate_values_on_update( $values );
