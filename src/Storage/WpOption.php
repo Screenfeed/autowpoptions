@@ -30,7 +30,7 @@ class WpOption implements StorageInterface {
 	 * @var   bool
 	 * @since 1.0.0
 	 */
-	private $network_option;
+	private $is_network_option;
 
 	/**
 	 * Tells if the option should be autoloaded by WP.
@@ -45,7 +45,7 @@ class WpOption implements StorageInterface {
 	 * The network ID.
 	 * Null for the current network ID.
 	 *
-	 * @var   int|null
+	 * @var   int
 	 * @since 1.0.0
 	 */
 	private $network_id;
@@ -55,9 +55,9 @@ class WpOption implements StorageInterface {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param  string       $option_name    Name of the option.
-	 * @param  bool         $network_option True if a network option. False otherwise.
-	 * @param  array<mixed> $args           {
+	 * @param  string       $option_name       Name of the option.
+	 * @param  bool         $is_network_option True if a network option. False otherwise.
+	 * @param  array<mixed> $args              {
 	 *     Optionnal arguments.
 	 *
 	 *     @type bool $autoload   True if the option must be autoloaded. False otherwise. Not used for network options. Default value is true.
@@ -65,11 +65,11 @@ class WpOption implements StorageInterface {
 	 * }
 	 * @return void
 	 */
-	public function __construct( $option_name, $network_option, array $args = [] ) {
-		$this->option_name    = (string) $option_name;
-		$this->network_option = (bool) $network_option;
-		$this->autoload       = ! empty( $args['autoload'] ) && 'no' !== $args['autoload'] ? 'yes' : 'no';
-		$this->network_id     = ! empty( $args['network_id'] ) && is_numeric( $args['network_id'] ) ? absint( $args['network_id'] ) : null;
+	public function __construct( $option_name, $is_network_option, array $args = [] ) {
+		$this->option_name       = (string) $option_name;
+		$this->is_network_option = (bool) $is_network_option;
+		$this->autoload          = isset( $args['autoload'] ) && ( 'no' === $args['autoload'] || false === $args['autoload'] ) ? 'no' : 'yes';
+		$this->network_id        = ! empty( $args['network_id'] ) && is_numeric( $args['network_id'] ) ? absint( $args['network_id'] ) : get_current_network_id();
 	}
 
 	/**
@@ -102,9 +102,6 @@ class WpOption implements StorageInterface {
 	 * @return int
 	 */
 	public function get_network_id() {
-		if ( ! isset( $this->network_id ) ) {
-			$this->network_id = get_current_network_id();
-		}
 		return $this->network_id;
 	}
 
@@ -116,7 +113,7 @@ class WpOption implements StorageInterface {
 	 * @return bool
 	 */
 	public function is_network_option() {
-		return (bool) $this->network_option;
+		return $this->is_network_option;
 	}
 
 	/**
@@ -141,9 +138,8 @@ class WpOption implements StorageInterface {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array<mixed> $values An array of option name / option value pairs.
-	 *
-	 * @return bool True if the value was updated, false otherwise.
+	 * @param  array<mixed> $values An array of option name / option value pairs.
+	 * @return bool                 True if the value was updated, false otherwise.
 	 */
 	public function set( array $values ) {
 		if ( empty( $values ) ) {
