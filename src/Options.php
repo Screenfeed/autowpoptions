@@ -84,6 +84,10 @@ class Options {
 	 * @return mixed       The option value. Null if the key does not exist.
 	 */
 	public function get( $key ) {
+		if ( ! is_string( $key ) ) {
+			return null;
+		}
+
 		$default_values = $this->sanitization->get_default_values();
 
 		if ( ! isset( $default_values[ $key ] ) ) {
@@ -153,13 +157,13 @@ class Options {
 	 * @since 1.0.0
 	 *
 	 * @param  array<mixed> $values An array of option name / option value pairs.
-	 * @return void
+	 * @return bool                 True if the value was updated, false otherwise.
 	 */
 	public function set( array $values ) {
 		$values = array_merge( $this->get_all(), $values );
 		$values = array_intersect_key( $values, $this->sanitization->get_default_values() );
 
-		$this->storage->set( $values );
+		return $this->storage->set( $values );
 	}
 
 	/**
@@ -168,22 +172,22 @@ class Options {
 	 * @since 1.0.0
 	 *
 	 * @param  array<string>|string $keys An array of option names or a single option name.
-	 * @return void
+	 * @return bool                       True if the value was updated, false otherwise.
 	 */
 	public function delete( $keys ) {
 		$values = $this->storage->get();
 
-		if ( ! $values ) {
+		if ( empty( $values ) ) {
 			if ( false !== $values ) {
-				$this->storage->delete();
+				return $this->storage->delete();
 			}
-			return;
+			return false;
 		}
 
 		$keys   = array_flip( (array) $keys );
 		$values = array_diff_key( $values, $keys );
 
-		$this->storage->set( $values );
+		return $this->storage->set( $values );
 	}
 
 	/**
@@ -191,10 +195,10 @@ class Options {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return void
+	 * @return bool True if the value was updated, false otherwise.
 	 */
 	public function delete_all() {
-		$this->storage->delete();
+		return $this->storage->delete();
 	}
 
 	/**
@@ -206,6 +210,12 @@ class Options {
 	 * @return bool
 	 */
 	public function has( $key ) {
-		return null !== $this->get( $key );
+		if ( ! is_string( $key ) ) {
+			return false;
+		}
+
+		$default_values = $this->sanitization->get_default_values();
+
+		return isset( $default_values[ $key ] );
 	}
 }
