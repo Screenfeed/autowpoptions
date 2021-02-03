@@ -1,7 +1,7 @@
 {
 	"name": "autowpoptions",
 	"description": "Manage a set of WordPress options.",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"homepage": "https://github.com/Screenfeed/autowpoptions",
 	"license": "GPL-2.0",
 	"private": true,
