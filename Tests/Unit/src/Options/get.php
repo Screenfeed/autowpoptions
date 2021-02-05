@@ -60,7 +60,7 @@ class Test_Get extends TestCase {
 			->willReturn( 'settings' );
 		$sanitization
 			->expects( $this->once() )
-			->method( 'sanitize_and_validate' )
+			->method( 'sanitize_value' )
 			->willReturnCallback(
 				function ( $key, $value, $default ) {
 					switch ( $key ) {

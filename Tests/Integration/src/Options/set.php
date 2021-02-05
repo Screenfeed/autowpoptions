@@ -3,7 +3,7 @@
 namespace Screenfeed\AutoWPOptions\Tests\Integration\src\Options;
 
 use Screenfeed\AutoWPOptions\Options;
-use Screenfeed\AutoWPOptions\Tests\Fixtures\src\Options\Sanitization;
+use Screenfeed\AutoWPOptions\Tests\Fixtures\src\Options\Sanitizer;
 use Screenfeed\AutoWPOptions\Tests\Fixtures\src\Options\Storage;
 use Screenfeed\AutoWPOptions\Tests\Integration\TestCase;
 
@@ -16,10 +16,10 @@ use Screenfeed\AutoWPOptions\Tests\Integration\TestCase;
 class Test_Set extends TestCase {
 
 	public function testShouldSetOnlyValidValues() {
-		$storage      = new Storage();
-		$sanitization = new Sanitization();
+		$storage   = new Storage();
+		$sanitizer = new Sanitizer();
 
-		$result   = ( new Options( $storage, $sanitization ) )->set(
+		$result   = ( new Options( $storage, $sanitizer ) )->set(
 			[
 				'test'       => [ '5' ],
 				'the_number' => '2',

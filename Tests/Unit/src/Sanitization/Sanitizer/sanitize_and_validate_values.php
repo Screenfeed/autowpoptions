@@ -1,16 +1,17 @@
 <?php
 
-namespace Screenfeed\AutoWPOptions\Tests\Unit\src\Sanitization\AbstractSanitization;
+namespace Screenfeed\AutoWPOptions\Tests\Unit\src\Sanitization\Sanitizer;
 
 use Brain\Monkey\Functions;
+use Screenfeed\AutoWPOptions\Sanitization\Sanitizer;
 
 /**
- * Tests for AbstractSanitization::sanitize_and_validate_on_update().
+ * Tests for Sanitizer::sanitize_and_validate_values().
  *
- * @covers AbstractSanitization::sanitize_and_validate_on_update
- * @group  AbstractSanitization
+ * @covers Sanitizer::sanitize_and_validate_values
+ * @group  Sanitizer
  */
-class Test_SanitizeAndValidateOnUpdate extends TestCase {
+class Test_SanitizeAndValidateValues extends TestCase {
 
 	public function testShouldReturnValidatedValues() {
 		$values    = [
@@ -29,13 +30,21 @@ class Test_SanitizeAndValidateOnUpdate extends TestCase {
 			'version'   => $this->testVersion . '.0',
 		];
 
-		$sanitization = $this->getSanitizationMock();
-		$sanitization
+		$option_definition = $this->getOptionDefinitionMock();
+		$option_definition
+			->expects( $this->once() ) // Called by `$this->get_default_values()`.
+			->method( 'get_prefix' )
+			->willReturn( $this->optionDefPrefix );
+		$option_definition
+			->expects( $this->once() ) // Called by `$this->get_default_values()`.
+			->method( 'get_identifier' )
+			->willReturn( $this->optionDefIdentifier );
+		$option_definition
 			->expects( $this->exactly( 2 ) )
-			->method( 'sanitize_and_validate_value' )
+			->method( 'sanitize_value' )
 			->withConsecutive(
-				[ 'the_array', [ '2', '3', '6' ], [] ],
-				[ 'the_text', 'custom text', 'some text' ]
+				[ 'the_array', [ '2', '3', '6' ], $this->optionDefDefaultValues['the_array'] ],
+				[ 'the_text', 'custom text', $this->optionDefDefaultValues['the_text'] ]
 			)
 			->willReturnCallback( function ( $key, $value, $default ) {
 				switch ( $key ) {
@@ -47,9 +56,9 @@ class Test_SanitizeAndValidateOnUpdate extends TestCase {
 						return false;
 				}
 			} );
-		$sanitization
+		$option_definition
 			->expects( $this->once() )
-			->method( 'validate_values_on_update' )
+			->method( 'validate_values' )
 			->with( $sanitized )
 			->willReturnCallback( function ( $values ) {
 				if ( isset( $values['the_array'] ) ) {
@@ -66,7 +75,9 @@ class Test_SanitizeAndValidateOnUpdate extends TestCase {
 				}
 			);
 
-		$validated = $sanitization->sanitize_and_validate_on_update( $values );
+		$sanitizer = new Sanitizer( $this->testVersion, $option_definition );
+
+		$validated = $sanitizer->sanitize_and_validate_values( $values );
 
 		$this->assertSame( $expected, $validated );
 	}

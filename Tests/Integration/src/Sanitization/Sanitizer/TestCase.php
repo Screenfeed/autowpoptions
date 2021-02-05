@@ -1,11 +1,11 @@
 <?php
 /**
- * Test Case for the `AbstractSanitization` integration tests.
+ * Test Case for the `Sanitizer` integration tests.
  *
  * @package Screenfeed\AutoWPOptions\Tests\Integration
  */
 
-namespace Screenfeed\AutoWPOptions\Tests\Integration\src\Sanitization\AbstractSanitization;
+namespace Screenfeed\AutoWPOptions\Tests\Integration\src\Sanitization\Sanitizer;
 
 use Screenfeed\AutoWPOptions\Tests\Integration\TestCase as BaseIntegrationTestCase;
 

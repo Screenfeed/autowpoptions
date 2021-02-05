@@ -3,7 +3,7 @@
 namespace Screenfeed\AutoWPOptions\Tests\Integration\src\Options;
 
 use Screenfeed\AutoWPOptions\Options;
-use Screenfeed\AutoWPOptions\Tests\Fixtures\src\Options\Sanitization;
+use Screenfeed\AutoWPOptions\Tests\Fixtures\src\Options\Sanitizer;
 use Screenfeed\AutoWPOptions\Tests\Fixtures\src\Options\Storage;
 use Screenfeed\AutoWPOptions\Tests\Integration\TestCase;
 
@@ -16,10 +16,10 @@ use Screenfeed\AutoWPOptions\Tests\Integration\TestCase;
 class Test_Delete extends TestCase {
 
 	public function testShouldDeleteOnlyValidValues() {
-		$storage      = new Storage();
-		$sanitization = new Sanitization();
+		$storage   = new Storage();
+		$sanitizer = new Sanitizer();
 
-		$result   = ( new Options( $storage, $sanitization ) )->delete(
+		$result   = ( new Options( $storage, $sanitizer ) )->delete(
 			[
 				'test',
 				'the_number',
@@ -34,10 +34,10 @@ class Test_Delete extends TestCase {
 	}
 
 	public function testShouldDeleteOption() {
-		$storage      = new Storage( [] );
-		$sanitization = new Sanitization();
+		$storage   = new Storage( [] );
+		$sanitizer = new Sanitizer();
 
-		$result = ( new Options( $storage, $sanitization ) )->delete(
+		$result = ( new Options( $storage, $sanitizer ) )->delete(
 			[
 				'test',
 				'the_number',
@@ -50,10 +50,10 @@ class Test_Delete extends TestCase {
 	}
 
 	public function testShouldNotDelete() {
-		$storage      = new Storage( false );
-		$sanitization = new Sanitization();
+		$storage   = new Storage( false );
+		$sanitizer = new Sanitizer();
 
-		$result = ( new Options( $storage, $sanitization ) )->delete(
+		$result = ( new Options( $storage, $sanitizer ) )->delete(
 			[
 				'test',
 				'the_number',

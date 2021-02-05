@@ -3,7 +3,7 @@
 namespace Screenfeed\AutoWPOptions\Tests\Integration\src\Options;
 
 use Screenfeed\AutoWPOptions\Options;
-use Screenfeed\AutoWPOptions\Tests\Fixtures\src\Options\Sanitization;
+use Screenfeed\AutoWPOptions\Tests\Fixtures\src\Options\Sanitizer;
 use Screenfeed\AutoWPOptions\Tests\Fixtures\src\Options\Storage;
 use Screenfeed\AutoWPOptions\Tests\Integration\TestCase;
 
@@ -16,28 +16,28 @@ use Screenfeed\AutoWPOptions\Tests\Integration\TestCase;
 class Test_Get extends TestCase {
 
 	public function testShouldReturnNullWhenNotStringOption() {
-		$storage      = new Storage();
-		$sanitization = new Sanitization();
-		$result       = ( new Options( $storage, $sanitization ) )->get( 12 );
+		$storage   = new Storage();
+		$sanitizer = new Sanitizer();
+		$result    = ( new Options( $storage, $sanitizer ) )->get( 12 );
 
 		$this->assertNull( $result );
 	}
 
 	public function testShouldReturnNullWhenUnkownOption() {
-		$storage      = new Storage();
-		$sanitization = new Sanitization();
-		$result       = ( new Options( $storage, $sanitization ) )->get( 'test' );
+		$storage   = new Storage();
+		$sanitizer = new Sanitizer();
+		$result    = ( new Options( $storage, $sanitizer ) )->get( 'test' );
 
 		$this->assertNull( $result );
 	}
 
 	public function testShouldReturnPreFilteredValue() {
-		$storage      = new Storage();
-		$sanitization = new Sanitization();
+		$storage   = new Storage();
+		$sanitizer = new Sanitizer();
 
 		add_filter( 'pre_get_fixture_settings_the_number', [ $this, 'theNumberPreFilter' ], 10, 2 );
 
-		$result = ( new Options( $storage, $sanitization ) )->get( 'the_number' );
+		$result = ( new Options( $storage, $sanitizer ) )->get( 'the_number' );
 
 		remove_filter( 'pre_get_fixture_settings_the_number', [ $this, 'theNumberPreFilter' ] );
 
@@ -45,12 +45,12 @@ class Test_Get extends TestCase {
 	}
 
 	public function testShouldReturnFilteredValue() {
-		$storage      = new Storage();
-		$sanitization = new Sanitization();
+		$storage   = new Storage();
+		$sanitizer = new Sanitizer();
 
 		add_filter( 'get_fixture_settings_the_number', [ $this, 'theNumberFilter' ], 10, 2 );
 
-		$result = ( new Options( $storage, $sanitization ) )->get( 'the_number' );
+		$result = ( new Options( $storage, $sanitizer ) )->get( 'the_number' );
 
 		remove_filter( 'get_fixture_settings_the_number', [ $this, 'theNumberFilter' ] );
 
@@ -58,9 +58,9 @@ class Test_Get extends TestCase {
 	}
 
 	public function testShouldReturnValue() {
-		$storage      = new Storage();
-		$sanitization = new Sanitization();
-		$result       = ( new Options( $storage, $sanitization ) )->get( 'the_number' );
+		$storage   = new Storage();
+		$sanitizer = new Sanitizer();
+		$result    = ( new Options( $storage, $sanitizer ) )->get( 'the_number' );
 
 		$this->assertSame( 7, $result );
 	}

@@ -3,7 +3,7 @@
 namespace Screenfeed\AutoWPOptions\Tests\Integration\src\Options;
 
 use Screenfeed\AutoWPOptions\Options;
-use Screenfeed\AutoWPOptions\Tests\Fixtures\src\Options\Sanitization;
+use Screenfeed\AutoWPOptions\Tests\Fixtures\src\Options\Sanitizer;
 use Screenfeed\AutoWPOptions\Tests\Fixtures\src\Options\Storage;
 use Screenfeed\AutoWPOptions\Tests\Integration\TestCase;
 
@@ -16,9 +16,9 @@ use Screenfeed\AutoWPOptions\Tests\Integration\TestCase;
 class Test_GetStorage extends TestCase {
 
 	public function testShouldReturnStorage() {
-		$storage      = new Storage();
-		$sanitization = new Sanitization();
-		$retrieved    = ( new Options( $storage, $sanitization ) )->get_storage();
+		$storage   = new Storage();
+		$sanitizer = new Sanitizer();
+		$retrieved = ( new Options( $storage, $sanitizer ) )->get_storage();
 
 		$this->assertSame( $storage, $retrieved );
 	}

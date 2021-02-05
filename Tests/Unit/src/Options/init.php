@@ -26,7 +26,7 @@ class Test_Init extends TestCase {
 
 		$sanitization = $this->createMock( SanitizationInterface::class );
 
-		Filters\expectAdded( 'sanitize_option_' . $this->full_name )->with( [ $sanitization, 'sanitize_and_validate_on_update' ], 50 );
+		Filters\expectAdded( 'sanitize_option_' . $this->full_name )->with( [ $sanitization, 'sanitize_and_validate_values' ], 50 );
 
 		( new Options( $storage, $sanitization ) )->init();
 	}

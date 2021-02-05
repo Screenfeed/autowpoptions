@@ -1,10 +1,10 @@
 <?php
 
-namespace Screenfeed\AutoWPOptions\Tests\Fixtures\src\Options;
+namespace Screenfeed\AutoWPOptions\Tests\Fixtures\src\Sanitization\Sanitizer;
 
-use Screenfeed\AutoWPOptions\Sanitization\SanitizationInterface;
+use Screenfeed\AutoWPOptions\OptionDefinition\OptionDefinitionInterface;
 
-class Sanitization implements SanitizationInterface {
+class ExampleOptionDefinition implements OptionDefinitionInterface {
 
 	public function get_prefix() {
 		return 'fixture';
@@ -18,7 +18,7 @@ class Sanitization implements SanitizationInterface {
 		return [
 			'the_array'  => [],
 			'the_number' => 0,
-			'the_text'   => 'some text',
+			'the_text'   => 'Default text',
 		];
 	}
 
@@ -26,27 +26,24 @@ class Sanitization implements SanitizationInterface {
 		return [
 			'the_array'  => [ 2 ],
 			'the_number' => 2,
-			'the_text'   => 'reset text',
+			'the_text'   => 'Reset text',
 		];
 	}
 
-	public function sanitize_and_validate( $key, $value, $default = null ) {
+	public function sanitize_value( $key, $value, $default = null ) {
 		switch ( $key ) {
 			case 'the_array':
-				$value = is_array( $value ) ? array_unique( array_map( 'absint', $value ) ) : [];
-				$value = ! empty( $value ) ? array_combine( $value, $value ) : [];
-				return $value;
+				return array_values( array_unique( array_map( 'absint', $value ) ) );
 			case 'the_number':
 				return absint( $value );
 			case 'the_text':
 				return (string) sanitize_text_field( $value );
-
-			default:
-				return false;
 		}
+
+		return false;
 	}
 
-	public function sanitize_and_validate_on_update( array $values ) {
+	public function validate_values( array $values ) {
 		if ( ! empty( $values['the_number'] ) && ! in_array( $values['the_number'], $values['the_array'], true ) ) {
 			$values['the_number'] = 0;
 		}
