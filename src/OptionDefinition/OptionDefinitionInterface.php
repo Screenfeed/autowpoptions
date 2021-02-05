@@ -5,21 +5,21 @@
  * @package Screenfeed/autowpoptions
  */
 
-namespace Screenfeed\AutoWPOptions\Sanitization;
+namespace Screenfeed\AutoWPOptions\OptionDefinition;
 
 defined( 'ABSPATH' ) || exit; // @phpstan-ignore-line
 
 /**
  * Interface to use to sanitize and validate options.
  *
- * @since 1.0.0
+ * @since 2.0.0
  */
-interface SanitizationInterface {
+interface OptionDefinitionInterface {
 
 	/**
 	 * Returns the prefix used in hook names.
 	 *
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 *
 	 * @return string
 	 */
@@ -28,7 +28,7 @@ interface SanitizationInterface {
 	/**
 	 * Returns the identifier used in the hook names.
 	 *
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 *
 	 * @return string
 	 */
@@ -40,8 +40,9 @@ interface SanitizationInterface {
 
 	/**
 	 * Returns default option values.
+	 * These values are used to correctly "guess" how to type cast the option values.
 	 *
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 *
 	 * @return array<mixed>
 	 */
@@ -49,8 +50,10 @@ interface SanitizationInterface {
 
 	/**
 	 * Returns the values used when the option is empty.
+	 * Keys that are not set are filled with default values:
+	 * return an empty array if you have nothing special to put in here.
 	 *
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 *
 	 * @return array<mixed>
 	 */
@@ -63,9 +66,9 @@ interface SanitizationInterface {
 	/**
 	 * Sanitizes an option value.
 	 * This is used when getting the value from storage, and also before storing it.
+	 * Type cast has already been done when reaching this point.
 	 *
-	 * @since 1.0.0
-	 * @since 2.0.0 Renamed from `sanitize_and_validate()` to `sanitize_value()`.
+	 * @since 2.0.0
 	 *
 	 * @param  string $key     The option key.
 	 * @param  mixed  $value   The value.
@@ -75,15 +78,14 @@ interface SanitizationInterface {
 	public function sanitize_value( $key, $value, $default = null );
 
 	/**
-	 * Sanitizes and validates the values before storing the option.
-	 * Basic sanitization and validation is done, value by value.
-	 * It is useful when we want to change a value depending on another one.
+	 * Sanitizes and validates the values.
+	 * This is used before storing them.
+	 * Type cast and sanitization have already been done when reaching this point.
 	 *
-	 * @since 1.0.0
-	 * @since 2.0.0 Renamed from `sanitize_and_validate_on_update()` to `sanitize_and_validate_values()`.
+	 * @since 2.0.0
 	 *
 	 * @param  array<mixed> $values The option values.
 	 * @return array<mixed>
 	 */
-	public function sanitize_and_validate_values( array $values );
+	public function validate_values( array $values );
 }

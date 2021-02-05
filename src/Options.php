@@ -57,7 +57,7 @@ class Options {
 	 * @return void
 	 */
 	public function init() {
-		add_filter( 'sanitize_option_' . $this->storage->get_full_name(), [ $this->sanitization, 'sanitize_and_validate_on_update' ], 50 );
+		add_filter( 'sanitize_option_' . $this->storage->get_full_name(), [ $this->sanitization, 'sanitize_and_validate_values' ], 50 );
 	}
 
 	/**
@@ -116,7 +116,7 @@ class Options {
 		$values = $this->get_all();
 
 		// Sanitize and validate the value.
-		$value = $this->sanitization->sanitize_and_validate( $key, $values[ $key ], $default );
+		$value = $this->sanitization->sanitize_value( $key, $values[ $key ], $default );
 
 		/**
 		 * Filters any option after read.

@@ -1,45 +1,39 @@
 <?php
 /**
- * Abstract class to use to sanitize and validate options.
+ * Class to use to sanitize and validate options.
  *
  * @package Screenfeed/autowpoptions
  */
 
 namespace Screenfeed\AutoWPOptions\Sanitization;
 
+use Screenfeed\AutoWPOptions\OptionDefinition\OptionDefinitionInterface;
+
 defined( 'ABSPATH' ) || exit; // @phpstan-ignore-line
 
 /**
- * Abstract class to use to sanitize and validate options.
+ * Class to use to sanitize and validate options.
  *
- * @since 1.0.0
+ * @since 2.0.0
  */
-abstract class AbstractSanitization implements SanitizationInterface {
+class Sanitizer implements SanitizationInterface {
 
 	/**
 	 * Current plugin version.
 	 * It is stored with the options, and may be used during an upgrade process.
 	 *
 	 * @var   string
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 */
 	protected $version;
 
 	/**
-	 * Prefix used in hook names.
+	 * An instance of OptionDefinitionInterface.
 	 *
-	 * @var   string
-	 * @since 1.0.0
+	 * @var   OptionDefinitionInterface
+	 * @since 2.0.0
 	 */
-	protected $prefix;
-
-	/**
-	 * Suffix used in hook names.
-	 *
-	 * @var   string
-	 * @since 1.0.0
-	 */
-	protected $identifier;
+	protected $definition;
 
 	/**
 	 * The default values.
@@ -47,7 +41,7 @@ abstract class AbstractSanitization implements SanitizationInterface {
 	 * Don't use null as value. `cached` and `version` are reserved keys, do not use them.
 	 *
 	 * @var   array<mixed>
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 */
 	protected $default_values;
 
@@ -57,48 +51,51 @@ abstract class AbstractSanitization implements SanitizationInterface {
 	 * `cached` and `version` are reserved keys, do not use them.
 	 *
 	 * @var   array<mixed>
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 */
 	protected $reset_values = [];
 
 	/**
 	 * The constructor.
 	 *
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 *
-	 * @param  string $version Current plugin version.
+	 * @param  string                    $version    Current plugin version.
+	 * @param  OptionDefinitionInterface $definition An instance of OptionDefinitionInterface.
 	 * @return void
 	 */
-	public function __construct( $version ) {
+	public function __construct( $version, OptionDefinitionInterface $definition ) {
 		$this->version        = $version;
+		$this->definition     = $definition;
 		$this->default_values = array_merge(
 			[
 				'version' => '',
 			],
-			$this->default_values
+			$definition->get_default_values()
 		);
+		$this->reset_values   = $definition->get_reset_values();
 	}
 
 	/**
 	 * Returns the prefix used in hook names.
 	 *
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 *
 	 * @return string
 	 */
 	public function get_prefix() {
-		return $this->prefix;
+		return $this->definition->get_prefix();
 	}
 
 	/**
 	 * Returns the identifier used in the hook names.
 	 *
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 *
 	 * @return string
 	 */
 	public function get_identifier() {
-		return $this->identifier;
+		return $this->definition->get_identifier();
 	}
 
 	/** ----------------------------------------------------------------------------------------- */
@@ -108,7 +105,7 @@ abstract class AbstractSanitization implements SanitizationInterface {
 	/**
 	 * Returns default option values.
 	 *
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 *
 	 * @return array<mixed>
 	 */
@@ -126,7 +123,7 @@ abstract class AbstractSanitization implements SanitizationInterface {
 		/**
 		 * Allows to add more default option values.
 		 *
-		 * @since 1.0.0
+		 * @since 2.0.0
 		 *
 		 * @param array $new_values     New default option values.
 		 * @param array $default_values Plugin default option values.
@@ -152,7 +149,7 @@ abstract class AbstractSanitization implements SanitizationInterface {
 	/**
 	 * Returns the values used when the option is empty.
 	 *
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 *
 	 * @return array<mixed>
 	 */
@@ -172,7 +169,7 @@ abstract class AbstractSanitization implements SanitizationInterface {
 		/**
 		 * Allows to filter the "reset" option values.
 		 *
-		 * @since 1.0.0
+		 * @since 2.0.0
 		 *
 		 * @param array $reset_values Plugin reset option values.
 		 */
@@ -193,17 +190,17 @@ abstract class AbstractSanitization implements SanitizationInterface {
 	/** ----------------------------------------------------------------------------------------- */
 
 	/**
-	 * Sanitizes and validates an option value.
-	 * This is used when getting the value from storage, and also before storing.
+	 * Sanitizes an option value.
+	 * This is used when getting the value from storage, and also before storing it.
 	 *
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 *
 	 * @param  string $key     The option key.
 	 * @param  mixed  $value   The value.
 	 * @param  mixed  $default The default value.
 	 * @return mixed
 	 */
-	public function sanitize_and_validate( $key, $value, $default = null ) {
+	public function sanitize_value( $key, $value, $default = null ) {
 		if ( ! isset( $default ) ) {
 			$default_values = $this->get_default_values();
 			$default        = $default_values[ $key ];
@@ -218,65 +215,38 @@ abstract class AbstractSanitization implements SanitizationInterface {
 
 		// Version.
 		if ( 'version' === $key ) {
-			return sanitize_text_field( $value );
+			return (string) sanitize_text_field( $value );
 		}
 
-		return $this->sanitize_and_validate_value( $key, $value, $default );
+		return $this->definition->sanitize_value( $key, $value, $default );
 	}
 
 	/**
-	 * Sanitizes and validates an option value. Basic casts have been made.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param  string $key     The option key.
-	 * @param  mixed  $value   The value.
-	 * @param  mixed  $default The default value.
-	 * @return mixed
-	 */
-	abstract protected function sanitize_and_validate_value( $key, $value, $default );
-
-	/**
-	 * Sanitizes and validates the options.
+	 * Sanitizes and validates the values.
 	 * This is used before storing them.
 	 *
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 *
 	 * @param  array<mixed> $values The option values.
 	 * @return array<mixed>
 	 */
-	public function sanitize_and_validate_on_update( array $values ) {
+	public function sanitize_and_validate_values( array $values ) {
 		$default_values = $this->get_default_values();
 
-		if ( ! empty( $values ) ) {
-			foreach ( $default_values as $key => $default ) {
-				if ( isset( $values[ $key ] ) ) {
-					$values[ $key ] = $this->sanitize_and_validate( $key, $values[ $key ], $default );
-				}
-			}
-
-			$values = array_intersect_key( $values, $default_values );
-		}
-
-		// Version.
 		if ( empty( $values['version'] ) ) {
-			$values['version'] = $this->sanitize_and_validate( 'version', $this->version, '' );
+			$values['version'] = $this->version;
 		}
 
-		return $this->validate_values_on_update( $values );
-	}
+		foreach ( $default_values as $key => $default ) {
+			if ( isset( $values[ $key ] ) ) {
+				$values[ $key ] = $this->sanitize_value( $key, $values[ $key ], $default );
+			}
+		}
 
-	/**
-	 * Validates the options before storing the values.
-	 * Basic sanitization and validation have been made, value by value.
-	 * It is useful when we want to change a value depending on another one.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param  array<mixed> $values The option value.
-	 * @return array<mixed>
-	 */
-	abstract protected function validate_values_on_update( array $values );
+		$values = array_intersect_key( $values, $default_values );
+
+		return $this->definition->validate_values( $values );
+	}
 
 	/** ----------------------------------------------------------------------------------------- */
 	/** TOOLS =================================================================================== */
@@ -285,7 +255,7 @@ abstract class AbstractSanitization implements SanitizationInterface {
 	/**
 	 * Casts a value, depending on its default value type.
 	 *
-	 * @since 1.0.0
+	 * @since 2.0.0
 	 *
 	 * @param  mixed $value   The value to cast.
 	 * @param  mixed $default The default value.
