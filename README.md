@@ -1,4 +1,4 @@
-# AutoWPOptions
+# AutoWPOptions 2.0.0
 
 Allows to manage a set of options in WordPress.
 
@@ -6,7 +6,7 @@ Requires **php 5.4** and **WordPress 4.4**.
 
 ## What you will be able to do
 
-* Decide if your set of options is network-wide or site-wide in a multisite environment,
+* In a multisite environment, decide if your set of options is network-wide or site-wide,
 * Obviously, get/set/delete values,
 * Provide default and reset values,
 * Cast, sanitize, and validate values automatically,
@@ -24,29 +24,29 @@ With composer:
 
 ## How to use
 
-Create one class that extends *Sanitization\AbstractSanitization*.
-This class will contain the following:
+Create one class that implements `Screenfeed\AutoWPOptions\OptionDefinition\OptionDefinitionInterface`.
+This class will provide the following:
 
-### Default values
+### Two methods returning a prefix and an identifier
 
-**Required**. They are used when an option has no value yet. Their type is used to decide how to cast the values.
+A prefix and an identifier are required to be used in hook names.
 
-### Reset values
+### A method returning default values
 
-**Optional**. Reset values are used if the whole set of options does not exist yet: sometimes you may want them to be different from the default values. Default values are used for the missing reset values.  
+They are used when an option has no value yet. Their type is used to decide how to cast the values.
+
+### A method returning reset values
+
+Reset values are used if the whole set of options does not exist yet: sometimes you may want them to be different from the default values. Default values are used for the missing reset values, meaning the method can return an empty array if you don't have anything special to do here.  
 You could also use them in a "Reset Options" process for example.
 
 ### A sanitization method
 
-**Required**. It is run for each option, when getting/updating it.
+It is run for each option, when getting/updating it.
 
 ### A validation method
 
-**Required** (but can simply return the entry if not needed). It is run once for all options on update. It allows to edit some values, depending on others for example.
-
-### Two keywords as class properties
-
-**Required**. They are used in hook names.
+It is run once for all options on update. It allows to edit some values, depending on others for example. It can simply return the entry if you have nothing special to do here.
 
 ### Example
 
@@ -57,93 +57,28 @@ How to create an option that is stored as an array in the WordPress' options tab
 * The option must be network-wide on a multisite install.
 
 ```php
+use Screenfeed\AutoWPOptions\Sanitization\Sanitizer;
 use Screenfeed\AutoWPOptions\Storage\WpOption;
 use Screenfeed\AutoWPOptions\Options;
 
-$option_name    = 'myplugin_settings';
-$network_wide   = true;
-$plugin_version = '2.3';
+$option_name       = 'myplugin_settings';
+$network_wide      = true;
+$plugin_version    = '2.3';
+$option_definition = new MyPluginOptionDefinition();
 
-$options_sanitization = new MyOptionsSanitization( $plugin_version );
-$options_storage      = new WpOption( $option_name, $network_wide );
-$options              = new Options( $options_storage, $options_sanitization );
+$options = new Options(
+	new WpOption( $option_name, $network_wide ),
+	new Sanitizer( $plugin_version, $option_definition )
+);
 
 $foobar = $options->get( 'foobar' ); // Returns an array of positive integers.
 ```
 
-The `MyOptionsSanitization` class:
-
-* The two keywords `myplugin` and `settings` are used in hook names, like the filter `get_myplugin_settings_foobar`.
-
-```php
-use Screenfeed\AutoWPOptions\Sanitization\AbstractSanitization;
-
-class OptionSanitization extends AbstractSanitization {
-
-	/**
-	 * Prefix used in hook names.
-	 *
-	 * @var string
-	 */
-	protected $prefix = 'myplugin';
-
-	/**
-	 * Suffix used in hook names.
-	 *
-	 * @var string
-	 */
-	protected $identifier = 'settings';
-
-	/**
-	 * The default values.
-	 * These are the "zero state" values.
-	 * Don't use null as value.
-	 *
-	 * @var array<mixed>
-	 */
-	protected $default_values = [
-		'foobar' => [],
-		'barbaz' => 0,
-	];
-
-	/**
-	 * Sanitizes and validates an option value. Basic casts have been made.
-	 *
-	 * @param  string $key     The option key.
-	 * @param  mixed  $value   The value.
-	 * @param  mixed  $default The default value.
-	 * @return mixed
-	 */
-	protected function sanitize_and_validate_value( $key, $value, $default ) {
-		switch ( $key ) {
-			case 'foobar':
-				return is_array( $value ) ? array_unique( array_map( 'absint', $value ) ) : [];
-			case 'barbaz':
-				return absint( $value );
-		}
-
-		return false;
-	}
-
-	/**
-	 * Validates all options before storing them. Basic sanitization and validation have been made, row by row.
-	 *
-	 * @param  array<mixed> $values The option value.
-	 * @return array<mixed>
-	 */
-	protected function validate_values_on_update( array $values ) {
-		if ( ! in_array( $values['barbaz'], $values['foobar'], true ) ) {
-			$values['barbaz'] = $this->default_values['barbaz'];
-		}
-		return $values;
-	}
-}
-
-```
+The `MyPluginOptionDefinition` class: take a look at [this example class](https://github.com/Screenfeed/autowpoptions/blob/main/src/OptionDefinition/Example.php) to see how to create your own class.
 
 ### An "upgrade process"?
 
-The plugin version used when instanciating `MyOptionsSanitization` is stored in the option and can be used in a future plugin release for an upgrade process.  
+The plugin version used when instanciating `Sanitizer` is stored in the option and can be used in a future plugin release for an upgrade process.  
 For example:
 
 ```php
