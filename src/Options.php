@@ -25,7 +25,7 @@ class Options {
 	 * @var   StorageInterface
 	 * @since 1.0.0
 	 */
-	private $storage;
+	protected $storage;
 
 	/**
 	 * An instance of SanitizationInterface.
@@ -33,7 +33,7 @@ class Options {
 	 * @var   SanitizationInterface
 	 * @since 1.0.0
 	 */
-	private $sanitization;
+	protected $sanitization;
 
 	/**
 	 * The constructor.

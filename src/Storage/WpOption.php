@@ -22,7 +22,7 @@ class WpOption implements StorageInterface {
 	 * @var   string
 	 * @since 1.0.0
 	 */
-	private $option_name;
+	protected $option_name;
 
 	/**
 	 * Tells if the option should be a network option.
@@ -30,7 +30,7 @@ class WpOption implements StorageInterface {
 	 * @var   bool
 	 * @since 1.0.0
 	 */
-	private $is_network_option;
+	protected $is_network_option;
 
 	/**
 	 * Tells if the option should be autoloaded by WP.
@@ -39,7 +39,7 @@ class WpOption implements StorageInterface {
 	 * @var   string
 	 * @since 1.0.0
 	 */
-	private $autoload;
+	protected $autoload;
 
 	/**
 	 * The network ID.
@@ -48,7 +48,7 @@ class WpOption implements StorageInterface {
 	 * @var   int
 	 * @since 1.0.0
 	 */
-	private $network_id;
+	protected $network_id;
 
 	/**
 	 * The constructor.
