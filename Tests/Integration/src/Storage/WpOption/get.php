@@ -43,7 +43,7 @@ class Test_Get extends TestCase {
 	public function testShouldReturnNetworkOptionWhenIsNetworkOption() {
 		update_network_option( $this->network_id, $this->option_name, [ 'foo' => 'bar' ] );
 
-		$options = ( new WpOption( $this->option_name, true ) )->get();
+		$options = ( new WpOption( $this->option_name, true, [ 'network_id' => $this->network_id ] ) )->get();
 
 		$this->assertSame( [ 'foo' => 'bar' ], $options );
 	}

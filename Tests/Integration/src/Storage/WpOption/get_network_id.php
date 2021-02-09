@@ -20,8 +20,8 @@ class Test_GetNetworkId extends TestCase {
 	}
 
 	public function testShouldReturnGivenNetworkId() {
-		$id = ( new WpOption( $this->option_name, false, [ 'network_id' => 4 ] ) )->get_network_id();
+		$id = ( new WpOption( $this->option_name, true, [ 'network_id' => $this->network_id ] ) )->get_network_id();
 
-		$this->assertSame( 4, $id );
+		$this->assertSame( $this->network_id, $id );
 	}
 }

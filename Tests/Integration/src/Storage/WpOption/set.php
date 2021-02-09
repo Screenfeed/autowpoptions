@@ -27,7 +27,7 @@ class Test_Set extends TestCase {
 			'the_number' => 6,
 		];
 
-		$updated = ( new WpOption( $this->option_name, true ) )->set( $values );
+		$updated = ( new WpOption( $this->option_name, true, [ 'network_id' => $this->network_id ] ) )->set( $values );
 
 		$this->assertTrue( $updated );
 		$this->assertSame( $values, get_network_option( $this->network_id, $this->option_name ) );

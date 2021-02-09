@@ -15,7 +15,7 @@ class Test_Delete extends TestCase {
 	public function testShouldDeleteNetworkOptionWhenIsNetworkOption() {
 		update_network_option( $this->network_id, $this->option_name, 'foobar' );
 
-		$deleted = ( new WpOption( $this->option_name, true, [ 'network_id' => 4 ] ) )->delete();
+		$deleted = ( new WpOption( $this->option_name, true, [ 'network_id' => $this->network_id ] ) )->delete();
 
 		$this->assertTrue( $deleted );
 		$this->assertFalse( get_network_option( $this->network_id, $this->option_name ) );
@@ -24,7 +24,7 @@ class Test_Delete extends TestCase {
 	public function testShouldDeleteSiteOptionWhenIsNotNetworkOption() {
 		update_option( $this->option_name, 'foobar' );
 
-		$deleted = ( new WpOption( $this->option_name, false, [ 'network_id' => 4 ] ) )->delete();
+		$deleted = ( new WpOption( $this->option_name, false ) )->delete();
 
 		$this->assertTrue( $deleted );
 		$this->assertFalse( get_option( $this->option_name ) );

@@ -17,7 +17,7 @@ class Test_IsNetworkOption extends TestCase {
 
 		$this->assertFalse( $is );
 
-		$is = ( new WpOption( $this->option_name, true ) )->is_network_option();
+		$is = ( new WpOption( $this->option_name, true, [ 'network_id' => $this->network_id ] ) )->is_network_option();
 
 		$this->assertTrue( $is );
 	}
