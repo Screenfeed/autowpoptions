@@ -22,6 +22,14 @@ With composer:
 },
 ```
 
+Without composer:
+
+Download the package, then:
+
+```php
+require_once '/{path-to}/autowpoptions/vendor/autoload.php';
+```
+
 ## How to use
 
 Create one class that implements `Screenfeed\AutoWPOptions\OptionDefinition\OptionDefinitionInterface`.
@@ -33,7 +41,7 @@ A prefix and an identifier are required to be used in hook names.
 
 ### A method returning default values
 
-They are used when an option has no value yet. Their type is used to decide how to cast the values.
+They are used when an option value is not set yet. Their type is used to decide how to cast the values.
 
 ### A method returning reset values
 
@@ -60,21 +68,74 @@ How to create an option that is stored as an array in the WordPress' options tab
 use Screenfeed\AutoWPOptions\Sanitization\Sanitizer;
 use Screenfeed\AutoWPOptions\Storage\WpOption;
 use Screenfeed\AutoWPOptions\Options;
+use Screenfeed\AutoWPOptions\OptionDefinition\Example;
 
 $option_name       = 'myplugin_settings';
 $network_wide      = true;
 $plugin_version    = '2.3';
-$option_definition = new MyPluginOptionDefinition();
+$option_definition = new Example(); // Create your own class, defining your options set.
 
 $options = new Options(
 	new WpOption( $option_name, $network_wide ),
 	new Sanitizer( $plugin_version, $option_definition )
 );
 
-$foobar = $options->get( 'foobar' ); // Returns an array of positive integers.
+$options->init();
+
+// Sets several values at once.
+$options->set(
+	[
+		'the_array'  => [ '2', '6', '8' ],
+		'the_number' => '8',
+	]
+);
+
+// Returns [ 2, 6, 8 ].
+$list = $options->get( 'the_array' );
 ```
 
-The `MyPluginOptionDefinition` class: take a look at [this example class](https://github.com/Screenfeed/autowpoptions/blob/main/src/OptionDefinition/Example.php) to see how to create your own class.
+Take a look at [this example class](https://github.com/Screenfeed/autowpoptions/blob/main/src/OptionDefinition/Example.php) to see how to create your own class.
+
+### Lazy loading
+
+You can use the class `Screenfeed\AutoWPOptions\Storage\LazyStorage` to prevent triggering the `set()` method several times. It will be triggered only once, upon class instance destruction.  
+This class must "wrap" the real storage class (like `WpOption`).
+
+```php
+use Screenfeed\AutoWPOptions\Sanitization\Sanitizer;
+use Screenfeed\AutoWPOptions\Storage\WpOption;
+use Screenfeed\AutoWPOptions\Options;
+use Screenfeed\AutoWPOptions\Storage\LazyStorage;
+use Screenfeed\AutoWPOptions\OptionDefinition\Example;
+
+$options = new Options(
+	new LazyStorage( new WpOption( 'myplugin_settings', false ) ),
+	new Sanitizer( '2.3', new Example() )
+);
+
+$options->init();
+
+$options->set(
+	[
+		'the_array'  => [ '2', '6', '8' ],
+		'the_number' => '8',
+	]
+);
+
+$options->set(
+	[
+		'the_text' => 'Some text.',
+	]
+);
+
+$options->set(
+	[
+		'the_other_text' => 'Some other text.',
+	]
+);
+```
+
+In the previous example, `update_option()` (from `WpOption->set()`) will be triggered only once. `unset( $options );` would also trigger it.
 
 ### An "upgrade process"?
 
