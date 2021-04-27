@@ -2,6 +2,7 @@
 
 namespace Screenfeed\AutoWPOptions\Tests\Fixtures\src\Options;
 
+use WP_Error;
 use Screenfeed\AutoWPOptions\Storage\StorageInterface;
 
 class Storage implements StorageInterface {
@@ -47,5 +48,9 @@ class Storage implements StorageInterface {
 	public function delete() {
 		$this->values = false;
 		return true;
+	}
+
+	public function get_errors() {
+		return new WP_Error( 'fixture_error', 'Fixture error' );
 	}
 }

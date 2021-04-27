@@ -7,6 +7,8 @@
 
 namespace Screenfeed\AutoWPOptions\Storage;
 
+use WP_Error;
+
 defined( 'ABSPATH' ) || exit; // @phpstan-ignore-line
 
 /**
@@ -81,4 +83,13 @@ interface StorageInterface {
 	 * @return bool True if the option was deleted, false otherwise.
 	 */
 	public function delete();
+
+	/**
+	 * Returns the errors.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return WP_Error
+	 */
+	public function get_errors();
 }

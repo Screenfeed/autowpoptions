@@ -7,6 +7,8 @@
 
 namespace Screenfeed\AutoWPOptions\Storage;
 
+use WP_Error;
+
 defined( 'ABSPATH' ) || exit; // @phpstan-ignore-line
 
 /**
@@ -151,6 +153,17 @@ class LazyStorage implements StorageInterface {
 		$this->values = false;
 
 		return false !== $previous;
+	}
+
+	/**
+	 * Returns the errors.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return WP_Error
+	 */
+	public function get_errors() {
+		return $this->storage->get_errors();
 	}
 
 	/**

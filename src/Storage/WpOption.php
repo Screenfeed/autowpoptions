@@ -7,6 +7,8 @@
 
 namespace Screenfeed\AutoWPOptions\Storage;
 
+use Screenfeed\AutoWPOptions\Traits\ErrorCatcher;
+
 defined( 'ABSPATH' ) || exit; // @phpstan-ignore-line
 
 /**
@@ -15,6 +17,7 @@ defined( 'ABSPATH' ) || exit; // @phpstan-ignore-line
  * @since 1.0.0
  */
 class WpOption implements StorageInterface {
+	use ErrorCatcher;
 
 	/**
 	 * Suffix used in the name of the option.
@@ -43,7 +46,6 @@ class WpOption implements StorageInterface {
 
 	/**
 	 * The network ID.
-	 * Null for the current network ID.
 	 *
 	 * @var   int
 	 * @since 1.0.0
@@ -70,6 +72,7 @@ class WpOption implements StorageInterface {
 		$this->is_network_option = (bool) $is_network_option;
 		$this->autoload          = isset( $args['autoload'] ) && ( 'no' === $args['autoload'] || false === $args['autoload'] ) ? 'no' : 'yes';
 		$this->network_id        = ! empty( $args['network_id'] ) && is_numeric( $args['network_id'] ) ? absint( $args['network_id'] ) : get_current_network_id();
+		$this->set_errors();
 	}
 
 	/**
@@ -124,7 +127,11 @@ class WpOption implements StorageInterface {
 	 * @return array<mixed>|false The options. False if not set yet. An empty array if invalid.
 	 */
 	public function get() {
-		$values = $this->is_network_option() ? get_network_option( $this->get_network_id(), $this->get_full_name() ) : get_option( $this->get_full_name() );
+		if ( $this->is_network_option() ) {
+			$values = $this->box( 'get_network_option', [ $this->get_network_id(), $this->get_full_name() ] );
+		} else {
+			$values = $this->box( 'get_option', [ $this->get_full_name() ] );
+		}
 
 		if ( false !== $values && ! is_array( $values ) ) {
 			return [];
@@ -147,11 +154,9 @@ class WpOption implements StorageInterface {
 			return $this->delete();
 		}
 		if ( $this->is_network_option() ) {
-			// Network option.
-			return update_network_option( $this->get_network_id(), $this->get_full_name(), $values );
+			return $this->box( 'update_network_option', [ $this->get_network_id(), $this->get_full_name(), $values ] );
 		}
-		// Site option.
-		return update_option( $this->get_full_name(), $values, $this->autoload );
+		return $this->box( 'update_option', [ $this->get_full_name(), $values, $this->autoload ] );
 	}
 
 	/**
@@ -162,6 +167,9 @@ class WpOption implements StorageInterface {
 	 * @return bool True if the option was deleted, false otherwise.
 	 */
 	public function delete() {
-		return $this->is_network_option() ? delete_network_option( $this->get_network_id(), $this->get_full_name() ) : delete_option( $this->get_full_name() );
+		if ( $this->is_network_option() ) {
+			return $this->box( 'delete_network_option', [ $this->get_network_id(), $this->get_full_name() ] );
+		}
+		return $this->box( 'delete_option', [ $this->get_full_name() ] );
 	}
 }
