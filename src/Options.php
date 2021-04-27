@@ -7,6 +7,7 @@
 
 namespace Screenfeed\AutoWPOptions;
 
+use WP_Error;
 use Screenfeed\AutoWPOptions\Storage\StorageInterface;
 use Screenfeed\AutoWPOptions\Sanitization\SanitizationInterface;
 
@@ -17,7 +18,7 @@ defined( 'ABSPATH' ) || exit; // @phpstan-ignore-line
  *
  * @since 1.0.0
  */
-class Options {
+class Options implements OptionsInterface {
 
 	/**
 	 * An instance of StorageInterface.
@@ -69,6 +70,17 @@ class Options {
 	 */
 	public function get_storage() {
 		return $this->storage;
+	}
+
+	/**
+	 * Returns the errors.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return WP_Error
+	 */
+	public function get_errors() {
+		return $this->storage->get_errors();
 	}
 
 	/** ----------------------------------------------------------------------------------------- */
