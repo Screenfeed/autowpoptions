@@ -29,6 +29,7 @@
 		"automattic/phpcs-neutron-standard": "*",
 		"brain/monkey": "^2.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "*",
+		"mikey179/vfsstream": "^1.6",
 		"phpcompatibility/phpcompatibility-wp": "*",
 		"phpmetrics/phpmetrics": "*",
 		"phpunit/phpunit": "^7.0",
