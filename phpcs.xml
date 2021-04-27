@@ -23,6 +23,7 @@
 	<!-- Run against the WordPress ruleset. -->
 	<rule ref="WordPress">
 		<exclude name="Generic.Arrays.DisallowShortArraySyntax.Found"/>
+		<exclude name="Squiz.PHP.CommentedOutCode.Found"/>
 		<exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
 		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
 	</rule>
@@ -30,8 +31,10 @@
 	<!-- Run against the NeutronStandard ruleset. -->
 	<rule ref="NeutronStandard">
 		<exclude name="NeutronStandard.AssignAlign.DisallowAssignAlign.Aligned"/>
+		<exclude name="NeutronStandard.Functions.DisallowCallUserFunc.CallUserFunc"/>
 		<exclude name="NeutronStandard.Functions.TypeHint.NoArgumentType"/>
 		<exclude name="NeutronStandard.Functions.TypeHint.NoReturnType"/>
+		<exclude name="NeutronStandard.MagicMethods.RiskyMagicMethod.RiskyMagicMethod"/>
 		<exclude name="NeutronStandard.StrictTypes.RequireStrictTypes.StrictTypes"/>
 	</rule>
 </ruleset>

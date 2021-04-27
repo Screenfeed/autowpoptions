@@ -13,3 +13,4 @@ parameters:
         - vendor/*
     ignoreErrors:
         - '#^Function apply_filters(_ref_array)? invoked with \d parameters, \d required\.$#'
+        - '#^Parameter \#\d \$[^ ]+ of (function|method) [^ ]+ expects \(?callable.+, array\(.+\) given\.$#'
