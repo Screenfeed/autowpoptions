@@ -44,10 +44,6 @@ function init_constants( $test_suite_folder ) {
 	define( 'AUTOWPOPTIONS_FIXTURES_ROOT', __DIR__ . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR );
 
 	if ( 'Unit' === $test_suite_folder && ! defined( 'ABSPATH' ) ) {
-		define( 'ABSPATH', __DIR__ . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'WordPress' . DIRECTORY_SEPARATOR );
-	}
-
-	if ( 'Integration' === $test_suite_folder && ! defined( 'SCREENFEED_IS_TESTING' ) ) {
-		define( 'SCREENFEED_IS_TESTING', true );
+		define( 'ABSPATH', Unit\get_wp_core_dir() . DIRECTORY_SEPARATOR );
 	}
 }

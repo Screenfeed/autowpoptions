@@ -33,7 +33,7 @@ function get_wp_tests_dir() {
 
 	// Check it again. If it doesn't exist, stop here and post a message as to why we stopped.
 	if ( ! file_exists( $tests_dir . '/includes/' ) ) {
-		trigger_error( 'Unable to run the integration tests, because the WordPress test suite could not be located.', E_USER_ERROR ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error -- Valid use case for our testing suite.
+		trigger_error( 'Unable to run the integration tests, because the WordPress test suite could not be located.', E_USER_ERROR );
 	}
 
 	// Strip off the trailing directory separator, if it exists.
