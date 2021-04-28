@@ -96,10 +96,32 @@ $list = $options->get( 'the_array' );
 
 Take a look at [this example class](https://github.com/Screenfeed/autowpoptions/blob/main/src/OptionDefinition/Example.php) to see how to create your own class.
 
+### Store in a file
+
+The WordPress' options table is not the only way to store settings, it can also be done in a file.  
+In this example, the settings will be stored in the file `/abspath-to/myplugin-settings-1-network.php` (the settings are network-wide and the network ID is `1`):
+
+```php
+use Screenfeed\AutoWPOptions\Sanitization\Sanitizer;
+use Screenfeed\AutoWPOptions\Storage\ConfigFile;
+use Screenfeed\AutoWPOptions\Options;
+use Screenfeed\AutoWPOptions\OptionDefinition\Example;
+
+$file_path         = ABSPATH . 'myplugin-settings-{autowpoptions-network-id}-{autowpoptions-blog-id}.php';
+$network_wide      = true;
+$plugin_version    = '2.3';
+$option_definition = new Example();
+
+$options = new Options(
+	new ConfigFile( $file_path, $network_wide ),
+	new Sanitizer( $plugin_version, $option_definition )
+);
+```
+
 ### Lazy loading
 
 You can use the class `Screenfeed\AutoWPOptions\Storage\LazyStorage` to prevent triggering the `set()` method several times. It will be triggered only once, upon class instance destruction.  
-This class must "wrap" the real storage class (like `WpOption`).
+This class must "wrap" the real storage class (`WpOption` or `ConfigFile`).
 
 ```php
 use Screenfeed\AutoWPOptions\Sanitization\Sanitizer;
@@ -135,7 +157,7 @@ $options->set(
 );
 ```
 
-In the previous example, `update_option()` (from `WpOption->set()`) will be triggered only once. `unset( $options );` would also trigger it.
+In the previous example, `update_option()` (from `WpOption->set()`) will be triggered only once. `unset( $options );` would also trigger it. Lazy loading can be very useful when `ConfigFile` is used.
 
 ### An "upgrade process"?
 
@@ -158,8 +180,3 @@ Don't use the following keywords as option keys, they are used internally:
 
 * cached
 * version
-
-## Extending
-
-You may want to store your options elsewhere than the WordPress' options table, maybe in configuration file (heck, why not). This package is built in such a way that it is possible.  
-To do so, you need to create a class that will replace `Screenfeed\AutoWPOptions\Storage\WpOption`, and implement `Screenfeed\AutoWPOptions\Storage\StorageInterface`.
