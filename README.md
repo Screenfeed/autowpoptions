@@ -1,4 +1,12 @@
-# AutoWPOptions 2.0.0
+# AutoWPOptions
+
+[![Version](https://badgen.net/github/release/Screenfeed/autowpoptions/stable)](https://github.com/Screenfeed/autowpoptions)
+![php](https://badgen.net/packagist/php/screenfeed/autowpoptions)
+![WordPress](https://badgen.net/badge/WordPress/>=4.4.0/purple)
+![License](https://badgen.net/github/license/Screenfeed/autowpoptions)
+![Repository dependents](https://badgen.net/github/dependents-repo/Screenfeed/autowpoptions)
+![Package dependents](https://badgen.net/github/dependents-pkg/Screenfeed/autowpoptions)
+[![Packagist name](https://badgen.net/packagist/name/screenfeed/autowpoptions)](https://packagist.org/packages/screenfeed/autowpoptions)
 
 Allows to manage a set of options in WordPress.
 
@@ -16,18 +24,8 @@ Requires **php 5.4** and **WordPress 4.4**.
 
 With composer:
 
-```json
-"require": {
-	"screenfeed/autowpoptions": "*"
-},
-```
-
-Without composer:
-
-Download the package, then:
-
-```php
-require_once '/{path-to}/autowpoptions/vendor/autoload.php';
+```bash
+composer require screenfeed/autowpoptions
 ```
 
 ## How to use
@@ -120,7 +118,7 @@ $options = new Options(
 
 ### Lazy loading
 
-You can use the class `Screenfeed\AutoWPOptions\Storage\LazyStorage` to prevent triggering the `set()` method several times. It will be triggered only once, upon class instance destruction.  
+You can use the class `Screenfeed\AutoWPOptions\Storage\LazyStorage` to prevent triggering the `set()` method several times. It will be triggered only once, upon class instance destruction. The `get()` method is also used only once.  
 This class must "wrap" the real storage class (`WpOption` or `ConfigFile`).
 
 ```php
@@ -157,11 +155,11 @@ $options->set(
 );
 ```
 
-In the previous example, `update_option()` (from `WpOption->set()`) will be triggered only once. `unset( $options );` would also trigger it. Lazy loading can be very useful when `ConfigFile` is used.
+In the previous example, `update_option()` (from `WpOption->set()`) will be triggered only once. `unset( $options );` would also trigger it. Lazy loading can be very useful when `ConfigFile` is used, to prevent multiple file writes and reads.
 
 ### An "upgrade process"?
 
-The plugin version used when instanciating `Sanitizer` is stored in the option and can be used in a future plugin release for an upgrade process.  
+The plugin version, provided when instanciating `Sanitizer`, is stored in the option and can be used in a future plugin release for an upgrade process.  
 For example:
 
 ```php
@@ -171,7 +169,7 @@ if ( version_compare( $site_version, '1.2' ) < 0 ) {
 	$options->set( [ 'barbaz', 8 ] );
 }
 
-$options->set( [ 'version', '2.5' ] );
+$options->set( [ 'version', '1.3' ] );
 ```
 
 ### Reserved keyworks
