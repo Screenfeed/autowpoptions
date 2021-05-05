@@ -1,0 +1,51 @@
+name: PHPStan lint
+
+on:
+  pull_request:
+    branches:
+      - main
+      - branch-*
+      - tool-*
+
+jobs:
+  run:
+    runs-on: ${{ matrix.operating-system }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        operating-system: [ubuntu-latest]
+        php-versions: ['7.4']
+
+    name: AutoWPOptions lint with PHPStan. PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }}.
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-versions }}
+        coverage: none
+        extensions: mbstring
+        tools: composer:v1, cs2pr
+
+    - name: Validate composer.json and composer.lock
+      run: composer validate
+
+    - name: Get Composer Cache Directory
+      id: composer-cache
+      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+    - name: Cache Composer dependencies
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-
+
+    - name: Install Composer dependencies
+      run: composer install --prefer-dist --no-scripts --no-progress --no-suggest --no-interaction
+
+    - name: Lint with PHPStan
+      run: vendor/bin/phpstan analyse --error-format=checkstyle | sed '/^$/d' | cs2pr
