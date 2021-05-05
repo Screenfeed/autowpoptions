@@ -47,5 +47,8 @@ jobs:
     - name: Install Composer dependencies
       run: composer install --prefer-dist --no-scripts --no-progress --no-suggest --no-interaction
 
+    - name: Check phpcs info
+      run: vendor/bin/phpcs -i
+
     - name: Lint with phpcs
       run: vendor/bin/phpcs --report=checkstyle -q | cs2pr
