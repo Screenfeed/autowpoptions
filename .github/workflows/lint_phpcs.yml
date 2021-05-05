@@ -51,4 +51,6 @@ jobs:
       run: vendor/bin/phpcs -i
 
     - name: Lint with phpcs
-      run: vendor/bin/phpcs --report=checkstyle -q | cs2pr
+      run: |
+        vendor/bin/phpcs --config-set installed_paths ../../automattic/phpcs-neutron-standard,../../phpcompatibility/php-compatibility,../../phpcompatibility/phpcompatibility-paragonie,../../phpcompatibility/phpcompatibility-wp,../../wp-coding-standards/wpcs
+        vendor/bin/phpcs --report=checkstyle -q | cs2pr
