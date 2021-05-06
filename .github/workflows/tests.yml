@@ -73,7 +73,7 @@ jobs:
 
     - name: Compat' for tests for WP < 5.1
       if: ${{ matrix.wp-versions == '4.4' }}
-      run: php -r "class_alias( '\PHPUnit\Framework\TestCase', '\PHPUnit_Framework_TestCase' );"
+      run: php -r "require_once 'vendor/autoload.php'; class_alias( '\PHPUnit\Framework\TestCase', 'PHPUnit_Framework_TestCase' );"
 
     - name: Run test
       run: composer run-tests
