@@ -73,7 +73,7 @@ jobs:
 
     - name: Compat' for tests for WP < 5.1
       if: ${{ matrix.wp-versions }} < 5.1
-      run: php -r "if ( ! class_exists( 'PHPUnit_Framework_TestCase' ) && class_exists( '\\PHPUnit\\Framework\\TestCase' ) ) { class_alias( '\\PHPUnit\\Framework\\TestCase', 'PHPUnit_Framework_TestCase' ) }"
+      run: php -r "if ( ! class_exists( 'PHPUnit_Framework_TestCase' ) && class_exists( '\\PHPUnit\\Framework\\TestCase' ) ) { class_alias( '\\PHPUnit\\Framework\\TestCase', 'PHPUnit_Framework_TestCase' ); }"
 
     - name: Run test
       run: composer run-tests
