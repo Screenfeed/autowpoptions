@@ -73,7 +73,7 @@ jobs:
 
     - name: Compat' for tests for WP < 5.1
       if: ${{ matrix.wp-versions == '4.4' }}
-      run: php -r "\$path = WP_TESTS_DIR . '/includes/testcase.php'; file_put_contents( \$path, str_replace( 'PHPUnit_Framework_TestCase', '\PHPUnit\Framework\TestCase', file_get_contents( \$path ) ) );"
+      run: php -r "\$path = env.WP_TESTS_DIR . '/includes/testcase.php'; file_put_contents( \$path, str_replace( 'PHPUnit_Framework_TestCase', '\PHPUnit\Framework\TestCase', file_get_contents( \$path ) ) );"
 
     - name: Run test
       run: composer run-tests
