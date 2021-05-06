@@ -70,7 +70,7 @@ jobs:
 
     - name: Compat' for tests for WP < 5.1
       if: ${{ matrix.wp-versions == '4.4' }}
-      run: php -r "require_once 'vendor/autoload.php'; class_alias( '\PHPUnit\Framework\TestCase', 'PHPUnit_Framework_TestCase' );"
+      run: php -r "class_alias( '\PHPUnit\Framework\TestCase', 'PHPUnit_Framework_TestCase', false );"
 
     - name: Install tests
       run: bash bin/install-wp-tests.sh wordpress_test root root 127.0.0.1:3306 ${{ matrix.wp-versions }}
