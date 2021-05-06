@@ -15,8 +15,17 @@ jobs:
       fail-fast: false
       matrix:
         operating-system: [ubuntu-latest, windows-latest, macOS-latest]
-        php-versions: ['7.1', '7.4', '8.0']
+        php-versions: ['7.2', '7.4']
         wp-versions: ['4.4', '5.2', 'latest']
+
+    services:
+      database:
+        image: mysql:5.6
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+
     name: WP ${{ matrix.wp-versions }} with PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }}.
 
     env:
@@ -33,9 +42,7 @@ jobs:
         php-version: ${{ matrix.php-versions }}
         coverage: none
         tools: composer:v1, phpunit, cs2pr
-
-    - name: Start mysql service
-      run: sudo /etc/init.d/mysql start
+        extensions: mysql
 
     - name: Setup problem matchers for PHP
       run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
