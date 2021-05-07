@@ -25,13 +25,13 @@
 		"php": ">=5.4.0"
 	},
 	"require-dev": {
-		"php": "^5.4 || ^7.0",
-		"automattic/phpcs-neutron-standard": "1.5.2 || ^1.7",
-		"brain/monkey": "^1.5 || ^2.6",
+		"php": ">=5.4.0",
+		"automattic/phpcs-neutron-standard": ">=1.5.2",
+		"brain/monkey": ">=1.5",
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7",
 		"phpcompatibility/phpcompatibility-wp": "^2.1",
-		"phpmetrics/phpmetrics": "2.0 || ^2.7",
-		"phpunit/phpunit": "~4.5 || ^5.0 || ^6.0 || ^7.0",
+		"phpmetrics/phpmetrics": ">=2.0",
+		"phpunit/phpunit": ">=4.8.36 <8.0",
 		"roave/security-advisories": "dev-master",
 		"squizlabs/php_codesniffer": "*",
 		"szepeviktor/phpstan-wordpress": "*",
