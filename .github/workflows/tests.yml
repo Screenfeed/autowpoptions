@@ -18,6 +18,11 @@ jobs:
         php-versions: ['7.2', '7.4']
         wp-versions: ['5.1', '5.2', 'latest']
 
+        include:
+        - operating-system: [ubuntu-latest]
+          php-versions: ['5.4']
+          wp-versions: ['5.1']
+
     services:
         database:
             image: mysql:5.6
