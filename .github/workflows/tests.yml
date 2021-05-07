@@ -71,13 +71,13 @@ jobs:
         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}-${{ matrix.dependency-version }}-
         restore-keys: ${{ runner.os }}-composer-${{ matrix.dependency-version }}-
 
-    - if: dependency-version == prefer-lowest
+    - if: ${{ matrix.dependency-version }} == prefer-lowest
       name: Install dependencies with prefer-lowest
       run: |
         composer remove szepeviktor/phpstan-wordpress
         composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress --no-suggest --no-interaction
 
-    - if: dependency-version != prefer-lowest
+    - if: ${{ matrix.dependency-version }} != prefer-lowest
       name: Install dependencies
       run: composer update --prefer-dist --no-progress --no-suggest --no-interaction
 
