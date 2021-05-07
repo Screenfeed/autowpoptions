@@ -19,9 +19,9 @@ jobs:
         wp-versions: ['5.1', '5.2', 'latest']
 
         include:
-        - operating-system: [ubuntu-latest]
-          php-versions: ['5.4']
-          wp-versions: ['5.1']
+        - operating-system: ubuntu-latest
+          php-versions: '5.4'
+          wp-versions: '5.1'
 
     services:
         database:
