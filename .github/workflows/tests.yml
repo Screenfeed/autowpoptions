@@ -74,7 +74,7 @@ jobs:
     - if: ${{ matrix.dependency-version }} == prefer-lowest
       name: Install dependencies with prefer-lowest
       run: |
-        composer remove szepeviktor/phpstan-wordpress
+        composer remove automattic/phpcs-neutron-standard dealerdirect/phpcodesniffer-composer-installer phpcompatibility/phpcompatibility-wp phpmetrics/phpmetrics roave/security-advisories squizlabs/php_codesniffer szepeviktor/phpstan-wordpress wp-coding-standards/wpcs
         composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress --no-suggest --no-interaction
 
     - if: ${{ matrix.dependency-version }} != prefer-lowest

@@ -26,7 +26,7 @@
 	},
 	"require-dev": {
 		"php": ">=5.4.0",
-		"automattic/phpcs-neutron-standard": ">=1.5.2",
+		"automattic/phpcs-neutron-standard": ">=1.7",
 		"brain/monkey": ">=1.5",
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7",
 		"phpcompatibility/phpcompatibility-wp": "^2.1",
