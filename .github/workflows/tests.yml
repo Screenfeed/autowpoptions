@@ -16,7 +16,7 @@ jobs:
       matrix:
         operating-system: [ubuntu-latest]
         php-versions: ['7.2', '7.4']
-        wp-versions: ['4.4', '5.2', 'latest']
+        wp-versions: ['5.1', '5.2', 'latest']
 
     services:
         database:
@@ -70,10 +70,6 @@ jobs:
 
     - name: Install tests
       run: bash bin/install-wp-tests.sh wordpress_test root root 127.0.0.1:3306 ${{ matrix.wp-versions }}
-
-    - name: Compat' for tests for WP < 5.1
-      if: ${{ matrix.wp-versions == '4.4' }}
-      run: php -r "\$path = '${{ env.WP_TESTS_DIR }}/includes/testcase.php'; file_put_contents( \$path, str_replace( 'class WP_UnitTestCase', 'class_alias( \'\PHPUnit\Framework\TestCase\', \'PHPUnit_Framework_TestCase\' );' . PHP_EOL . 'class_alias( \'\PHPUnit\Framework\Exception\', \'PHPUnit_Framework_Exception\' );' . PHP_EOL . 'class WP_UnitTestCase', file_get_contents( \$path ) ) );"
 
     - name: Run test
       run: composer run-tests
