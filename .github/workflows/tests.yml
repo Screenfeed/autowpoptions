@@ -16,7 +16,7 @@ jobs:
       matrix:
         operating-system: [ubuntu-latest]
         php-versions: ['7.1', '7.4']
-        wp-versions: ['5.1', '5.2', 'latest']
+        wp-versions: ['5.1', 'latest']
 
     services:
         database:
